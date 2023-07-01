@@ -1,11 +1,11 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      */
@@ -20,6 +20,18 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
+
+        if (App::isLocal() || App::runningUnitTests()) {
+            $user = User::factory()->create([
+                'id' => config('local.testing.user.id'),
+                'name' => config('local.testing.user.name'),
+                'email' => config('local.testing.user.email'),
+                'password' => config('local.testing.user.password'),
+            ]);
+            User::factory()
+                ->count(2)
+                ->create();
+        }
     }
 
     /**

@@ -22,8 +22,8 @@ class AuthController extends Controller
             ];
         }
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
+        return response()->json([
+            'message' => 'Not authenticated',
+        ], 401);
     }
 }
