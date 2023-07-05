@@ -34,7 +34,7 @@ class SanctumLoginTest extends TestCase
 
         $user = User::factory()->make([
             'email' => config('local.testing.user.email'),
-            'password' => Hash::make(config('local.testing.user.password')),
+            'password' => Hash::make((string) config('local.testing.user.password')),
         ]);
 
         $response = $this->postJson('/api/login', [
