@@ -22,7 +22,7 @@ class EloquentCategoryRepository extends AbstractEloquentRepository implements C
         return parent::getById($id);
     }
 
-    public function saveCategory(Category $category): bool
+    public function saveCategory(Category $category): bool|Category
     {
         return parent::save($category);
     }

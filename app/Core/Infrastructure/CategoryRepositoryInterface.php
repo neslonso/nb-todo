@@ -10,7 +10,7 @@ interface CategoryRepositoryInterface
 
     public function getCategoryById(int $id): ?Category;
 
-    public function saveCategory(Category $task): bool;
+    public function saveCategory(Category $task): bool|Category;
 
     public function deleteCategory(int $id): bool;
 }

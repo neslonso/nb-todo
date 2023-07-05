@@ -23,7 +23,7 @@ class TaskService
         return $this->taskRepository->getTaskById($id);
     }
 
-    public function saveTask(int $id = null, int $user_id, string $title, string $description, bool $is_completed, array $categories): bool
+    public function saveTask(int $id = null, int $user_id, string $title, string $description, bool $is_completed, array $categories): bool|Task
     {
         $task = new Task($id, $user_id, $title, $description, $is_completed, null, $categories);
 

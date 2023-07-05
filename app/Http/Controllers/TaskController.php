@@ -37,19 +37,20 @@ class TaskController extends Controller
         );
     }
 
-    public function save(Request $request, ApiResponseInterface $apiResponse, ?int $id = null): \Illuminate\Http\JsonResponse
+    public function save(Request $request, ApiResponseInterface $apiResponse): \Illuminate\Http\JsonResponse
     {
         $this->validate($request, [
+            'id' => 'integer',
             'title' => 'required|string',
             'description' => 'required|string',
             'is_completed' => 'required|boolean',
             'categories' => 'array',
         ]);
 
-        $user_id = 1; // Paso de los usuarios por ahora (Auth::user()->id;)
+        $user_id = Auth::user()->id;
 
-        $result = $this->taskService->saveTask(
-            $id,
+        $task = $this->taskService->saveTask(
+            $request->input('id', null),
             $user_id,
             $request->input('title'),
             $request->input('description'),
@@ -57,13 +58,13 @@ class TaskController extends Controller
             $request->input('categories', [])
         );
 
-        if (!$result) {
+        if (!$task) {
             return response()->json(
-                $apiResponse::create(true, 'Task not found', (object) []), 404);
+                $apiResponse::create(true, 'Task not saved', (object) []), 404);
         }
 
         return response()->json(
-            $apiResponse::create(false, '', (object) ['result' => $result]), 201);
+            $apiResponse::create(false, '', (object) ['task' => $task->toArray()]), 201);
     }
 
     public function deleteById(int $id, ApiResponseInterface $apiResponse): \Illuminate\Http\JsonResponse

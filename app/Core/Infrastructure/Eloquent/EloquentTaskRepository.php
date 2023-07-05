@@ -32,7 +32,7 @@ class EloquentTaskRepository extends AbstractEloquentRepository implements TaskR
         return parent::getById($id);
     }
 
-    public function saveTask(Task $task): bool
+    public function saveTask(Task $task): bool|Task
     {
         $aSync = array_map(function ($elto) {
             return [
@@ -44,24 +44,14 @@ class EloquentTaskRepository extends AbstractEloquentRepository implements TaskR
         $mTask = $this->model->findOrNew($task->getId());
         $mTask->fill($task->toArray());
         $mTask->save();
-        $mTask->categories()->sync($aSync);
 
-        /*
-        //$update = is_numeric($task->getId()) && $task->getId() > 0;
-        if ($update) {
-            $mTask = $this->model->find($task->getId());
-            $mTask->title = $task->getTitle();
-            $mTask->description = $task->getDescription();
-            $mTask->is_completed = $task->getIs_completed();
-            $mTask->save();
-        } else {
-            $mTask = $this->model->newInstance($task->toArray(), false);
-            $mTask->save();
-        }
-        $mTask->categories()->sync($task->getCategories());
-        */
+        // $mTask->categories()->sync($aSync); // sync falla si ya existe el registro, integrity constraint violation ¿ porqué intenta volver a meter registros que ya existen ?
+        $mTask->categories()->detach();
+        $mTask->categories()->attach($aSync);
 
-        return true;
+        $task = Task::fromArray($mTask->toArray());
+
+        return $task;
     }
 
     public function deleteTask(int $id): bool

@@ -10,7 +10,7 @@ interface TaskRepositoryInterface
 
     public function getTaskById(int $id): ?Task;
 
-    public function saveTask(Task $task): bool;
+    public function saveTask(Task $task): bool|Task;
 
     public function deleteTask(int $id): bool;
 
