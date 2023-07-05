@@ -2,8 +2,10 @@
 
 namespace App\Exceptions;
 
+use App\Core\Application\Interfaces\ApiResponseInterface;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Throwable;
+use Illuminate\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -23,8 +25,29 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->reportable(function (\Throwable $e) {
         });
+    }
+
+    protected function unauthenticated($request, AuthenticationException $exception): \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+    {
+        if ($request->expectsJson()) {
+            $apiResponse = app(ApiResponseInterface::class);
+
+            return response()->json(
+                $apiResponse::create(true, $exception->getMessage(), (object) []),
+                401);
+        }
+
+        return redirect()->guest($exception->redirectTo() ?? route('login'));
+    }
+
+    protected function invalidJson($request, ValidationException $exception): \Illuminate\Http\JsonResponse
+    {
+        $apiResponse = app(ApiResponseInterface::class);
+
+        return response()->json(
+            $apiResponse::create(true, 'Validation error(s)', (object) $exception->errors()),
+            $exception->status);
     }
 }
