@@ -14,7 +14,7 @@ git submodule update --init --recursive
 cp .env.local .env
 
 # Instalar y habilitar la extensión xml para php8.2
-apt-get install php8.2-xml -y
+apt-get install php8.2-xml php8.2-curl -y
 phpenmod xml
 
 # Instalar dependencias con Composer
