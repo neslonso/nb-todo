@@ -87,3 +87,17 @@ Probado contra debian 12 con los requisitos instalados (docker en lxc sobre prox
   se están recuperando. Así podemos identificar consultas que están tardando más
   tiempo de lo normal o recuperando más datos de lo necesario, lo que nos permite
   enfocar los esfuerzos en optimizar esas consultas.
+
+# Consideraciones de desarrollo
+- Los services de Task y Category existen solo de forma demostativa. Su función sería
+ofrecer la posibilidad de agregar datos de fuentes adicionales (una API, un archivo,
+de un socket, etc.). En ese caso:
+  - El constructor de cada service recibiría un array de interfaces a repositorios
+  - Cada operación (salvo getAll*) recibiría el identificador de la fuente de datos a utilizar
+  - Los repositories de Task y Category existen para minimizar el acoplamiento con el
+  sistema de persistencia subyancete a cada uno. En caso de necesitar cambiar de
+  sistema de persistencia, bastaría con modificar el repository correspondiente.
+- El sistema de autenticación es muy básico, solo para demostrar el uso de Laravel
+Sail y Sanctum.
+- Se ha implementado un control de errores minimo en el frontend, solo como demostración
+de como se podría implementar.
